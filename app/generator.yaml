@@ -1,0 +1,20 @@
+apiVersion: v1
+kind: Pod
+metadata:
+  name: config-generator
+  namespace: default
+  annotations:
+    argocd.argoproj.io/sync-wave: "0"
+spec:
+  containers:
+    - name: config-generator
+      image: busybox
+      command: ["/bin/sh", "-c"]
+      args: ["echo 'server { listen 80; }' > /config/nginx.conf && sleep 5"]
+      volumeMounts:
+        - name: config
+          mountPath: /config
+  restartPolicy: OnFailure
+  volumes:
+    - name: config
+      emptyDir: {}
